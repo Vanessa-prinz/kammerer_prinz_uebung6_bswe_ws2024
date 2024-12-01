@@ -29,8 +29,12 @@ public abstract class SortAlgorithm {
             logger.warn("Counting sort algorithm can not handle negative numbers!");
             return;
         }
-        int[] sortedList = sortAlgorithm.executeAlgorithm(list);
-        logger.info("Original list: " + ListProcessor.getListAsString(list));
-        logger.info("Sorted list: " + ListProcessor.getListAsString(sortedList));
+        try {
+            int[] sortedList = sortAlgorithm.executeAlgorithm(list);
+            logger.info("Original list: " + ListProcessor.getListAsString(list));
+            logger.info("Sorted list: " + ListProcessor.getListAsString(sortedList));
+        } catch (Exception e) {
+            logger.error(e);
+        }
     }
 }

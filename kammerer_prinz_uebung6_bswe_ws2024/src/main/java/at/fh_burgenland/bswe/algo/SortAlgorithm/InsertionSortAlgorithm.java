@@ -5,5 +5,6 @@ public class InsertionSortAlgorithm extends SortAlgorithm {
     @Override
     public int[] getSortedList(int[] originalList) {
         //TODO: implement
+        return originalList;
     }
 }
