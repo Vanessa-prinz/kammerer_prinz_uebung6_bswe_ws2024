@@ -2,73 +2,46 @@ package at.fh_burgenland.bswe.algo;
 
 import at.fh_burgenland.bswe.algo.SortAlgorithm.InsertionSortAlgorithm;
 import at.fh_burgenland.bswe.algo.SortAlgorithm.CountingSortAlgorithm;
-import lombok.extern.log4j.Log4j2;
 
-import java.util.List;
 import java.util.Scanner;
 
 import static at.fh_burgenland.bswe.algo.SortAlgorithm.SortAlgorithm.runSortAlgorithm;
 
-@Log4j2
+/**
+ * This class provides a menu to allow interactions with the user.
+ */
 public class Menu {
 
     private static final Scanner scanner = new Scanner(System.in);
 
+    /**
+     * This method runs the main menu loop. The user can choose between different input variants and sort algorithms.
+     * The programm continues running until the user chooses to exit the program.
+     */
     public static void run() {
         System.out.println("Welcome to our sort algorithms program!");
-        String text = """
-                1. You will choose your type of input (console or file)
-                2. If you chose console: you will enter your list
-                2. If you chose file: you will choose a type of file
-                3. You will choose your type of sort algorithm (insertion or counting)
-                """;
-        System.out.println(text);
         boolean isRunning = true;
-
+        boolean runSort = true;
         while (isRunning) {
-            System.out.print("Please choose your type of input (1-console input, 2-file input, 3-exit program): ");
+            String inputMenu = """
+                    You have the following options for input to choose from:
+                    1 - console input
+                    2 - file input
+                    3 - exit program
+                    """;
+            System.out.println(inputMenu);
+            System.out.print("Please enter your input choice: ");
             int inputChoice = checkInputMisMatch();
             int[] list = null;
             switch (inputChoice) {
                 case 1:
-                    System.out.println("Enter the list in the following format: 1,2,3,... (only integer, seperated by ',', spacing is removed)");
-                    System.out.println("Please give me your list:");
-                    String listInput = scanner.nextLine();
-                    list = ListProcessor.getListFromUserInput(listInput);
-                    if (list == null) {
-                        System.out.println("Invalid input! Please enter again.");
-                    }
+                    list = getListFromConsole();
                     break;
                 case 2:
-                    System.out.println("Please choose a file from the following list: ");
-                    String fileMenu = """
-                            1 - digits
-                            2 - numbers_1_to_100
-                            3 - Random-Zahlen-die-größer-als-1000-sind
-                            4 - Random-Zahlen-von-1-zu-1000
-                            """;
-                    System.out.println(fileMenu);
-                    System.out.print("Please enter your file type: ");
-                    int fileChoice = checkInputMisMatch();
-                    switch (fileChoice) {
-                        case 1:
-                            list = ListProcessor.getListFromFile("digits.txt");
-                            break;
-                        case 2:
-                            list = ListProcessor.getListFromFile("numbers_1_to_100.txt");
-                            break;
-                        case 3:
-                            list = ListProcessor.getListFromFile("Random-Zahlen-die-größer-als-1000-sind.txt");
-                            break;
-                        case 4:
-                            list = ListProcessor.getListFromFile("Random-Zahlen-von-1-zu-1000.txt");
-                            break;
-                        default:
-                            System.out.println("Invalid file choice! Please enter a valid number.");
-                            break;
-                    }
+                    list = getListFromFile(list);
                     break;
                 case 3:
+                    runSort = false;
                     isRunning = false;
                     break;
                 default:
@@ -76,25 +49,104 @@ public class Menu {
                     break;
             }
 
-            if (list != null) {
-                System.out.print("Please choose your type of algorithm (1-Insertion sort, 2-Counting sort, 3-exit program): ");
-                int algorithmChoice = checkInputMisMatch();
-                switch (algorithmChoice) {
-                    case 1:
-                        runSortAlgorithm(list, new InsertionSortAlgorithm());
-                        break;
-                    case 2:
-                        runSortAlgorithm(list, new CountingSortAlgorithm());
-                        break;
-                    case 3:
-                        isRunning = false;
-                        break;
-                    default:
-                        System.out.println("Invalid algorithm choice! Please enter a valid number.");
-                        break;
+            String menu = """
+                    Now that we have your input, you have the following options:
+                    1 - use the insertion sort
+                    2 - use the counting sort
+                    3 - change your input choice
+                    4 - exit program
+                    """;
+                while (runSort) {
+                    System.out.println(menu);
+                    System.out.print("Please enter your choice: ");
+                    int userChoice = checkInputMisMatch();
+                    switch (userChoice) {
+                        case 1:
+                            runSortAlgorithm(list, new InsertionSortAlgorithm());
+                            break;
+                        case 2:
+                            runSortAlgorithm(list, new CountingSortAlgorithm());
+                            break;
+                        case 3:
+                            runSort = false;
+                            break;
+                        case 4:
+                            runSort = false;
+                            isRunning = false;
+                            break;
+                        default:
+                            System.out.println("Invalid choice! Please enter a valid number.");
+                            break;
+                    }
                 }
             }
         }
+
+    /**
+     * This method prompts the user to enter a list of integers per console.
+     * If the input is invalid, the user is asked to re-enter the input until it is valid.
+     * @return an array of integers entered by the user
+     */
+    private static int[] getListFromConsole() {
+        int[] list = new int[0];
+        boolean isValidInput = false;
+
+        while (!isValidInput) {
+            System.out.println("Enter the list in the following format: 1,2,3,... (only integer, seperated by ',', spacing is removed)");
+            System.out.println("Please give me your list:");
+            String listInput = scanner.nextLine();
+            list = ListProcessor.getListFromUserInput(listInput);
+            if (list == null) {
+                System.out.println("Invalid input! Please enter again.");
+            } else {
+                isValidInput = true;
+            }
+        }
+        return list;
+    }
+
+    /**
+     * This method prompts the user to select a predefined file containing a list of integers.
+     * If the input is invalid, the user is asked to re-enter the choice until it is valid.
+     * @param list the array to store the integers, read from the file
+     * @return an array of integers from the selected file
+     */
+    private static int[] getListFromFile(int[] list) {
+        String fileMenu = """
+                You have the following files to choose from:
+                1 - digits
+                2 - numbers_1_to_100
+                3 - Random-Zahlen-die-größer-als-1000-sind
+                4 - Random-Zahlen-von-1-zu-1000
+                """;
+        boolean isValidInput = false;
+        while (!isValidInput) {
+            System.out.println(fileMenu);
+            System.out.print("Please enter your file choice: ");
+            int fileChoice = checkInputMisMatch();
+            switch (fileChoice) {
+                case 1:
+                    list = ListProcessor.getListFromFile("digits.txt");
+                    isValidInput = true;
+                    break;
+                case 2:
+                    list = ListProcessor.getListFromFile("numbers_1_to_100.txt");
+                    isValidInput = true;
+                    break;
+                case 3:
+                    list = ListProcessor.getListFromFile("Random-Zahlen-die-größer-als-1000-sind.txt");
+                    isValidInput = true;
+                    break;
+                case 4:
+                    list = ListProcessor.getListFromFile("Random-Zahlen-von-1-zu-1000.txt");
+                    isValidInput = true;
+                    break;
+                default:
+                    System.out.println("Invalid file choice! Please enter a valid number between 1 and 4.");
+                    break;
+            }
+        }
+        return list;
     }
 
     /**

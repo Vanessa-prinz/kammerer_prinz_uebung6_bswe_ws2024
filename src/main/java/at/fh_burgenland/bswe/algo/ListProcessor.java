@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 /**
- * This class provides methods for processing, sorting and validating lists from user input.
+ * This class provides methods for processing, sorting and validating lists from user or file input.
  */
 public class ListProcessor {
 
@@ -38,6 +38,12 @@ public class ListProcessor {
         }
     }
 
+    /**
+     * This method checks if the given array contains any negative numbers.
+     * The counting sort algorithm can not execute with negative numbers.
+     * @param values an array of integers to check
+     * @return true if the array contains any negative numbers, false if otherwise
+     */
     public static boolean hasNegativeNumbers(int[] values) {
         for (int i = 0; i < values.length; i++) {
             if (values[i] < 0) {
@@ -74,6 +80,12 @@ public class ListProcessor {
         return listAsString.toString().trim();
     }
 
+    /**
+     * This method reads a list of integers from a file.
+     * The file input can be seperated by semicolons or line breaks.
+     * @param fileName the name of the file to read
+     * @return an array of integers from the file or null if the file does not exist or the values are invalid
+     */
     public static int[] getListFromFile(String fileName) {
         Path path = Paths.get("src", "main", "resources", fileName);
         ArrayList<Integer> integerArray = new ArrayList<>();
@@ -83,23 +95,34 @@ public class ListProcessor {
             return null;
         }
 
-        try (BufferedReader reader = Files.newBufferedReader(path)) { //new BufferedReader(new java.io.FileReader(path.toString()))) {
-            String firstLine = reader.readLine();  //erste Zeile einlesen
+        try (BufferedReader reader = Files.newBufferedReader(path)) {
+            String firstLine = reader.readLine();
 
             if (firstLine != null && firstLine.contains(";")) {
                 System.out.println("File contains semicolon. Processing with semicolons...");
                 processWithSemicolon(firstLine, integerArray);
-            } else {
+            } else if (firstLine != null) {
+                try {
+                    integerArray.add(Integer.parseInt(firstLine.trim()));
+                } catch (NumberFormatException e) {
+                    System.out.println("Value can not be parsed!");
+                }
                 System.out.println("File does not contain semicolon. Processing with line breaks...");
                 processWithLineBreak(reader, integerArray);
-            }
+                }
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
 
-        return integerArray.stream().mapToInt(i -> i).toArray(); //Umwandlung von ArrayList in int[]
+        return integerArray.stream().mapToInt(i -> i).toArray();
     }
 
+    /**
+     * This method processes a line of input where the values are seperated by semicolons.
+     * This method is called when the first line in the file contains semicolons as separation.
+     * @param line the line of input containing values that are seperated by semicolons
+     * @param integerArray an ArrayList to store the parsed integers
+     */
     private static void processWithSemicolon(String line, ArrayList<Integer> integerArray) {
         String[] stringValues = line.split(";");
         for (String value : stringValues) {
@@ -112,6 +135,13 @@ public class ListProcessor {
         }
     }
 
+    /**
+     * This method processes the input of a file where each line contains one value.
+     * This method is called when the first line in the file contains no semicolons as separation.
+     * @param reader a BufferedReader to read the file line by line
+     * @param integerArray an ArrayList to store the parsed integers
+     * @throws IOException if an I/O error occurs while reading the file
+     */
     private static void processWithLineBreak(BufferedReader reader, ArrayList<Integer> integerArray) throws IOException {
         String line;
         while ((line = reader.readLine()) != null) {

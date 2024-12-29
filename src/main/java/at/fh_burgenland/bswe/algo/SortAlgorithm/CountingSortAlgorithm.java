@@ -2,8 +2,17 @@ package at.fh_burgenland.bswe.algo.SortAlgorithm;
 
 import java.util.Arrays;
 
+/**
+ * This class implements the counting sort algorithm.
+ */
 public class CountingSortAlgorithm extends SortAlgorithm {
 
+    /**
+     * This method implements the logic of the counting sort algorithm.
+     * It trys to sort a given list.
+     * @param originalList the array of integers to sort
+     * @return the sorted list of integers or null if the given list is empty or null
+     */
     @Override
     public int[] getSortedList(int[] originalList) {
         if (originalList == null || originalList.length == 0)
