@@ -36,9 +36,11 @@ public class Menu {
             switch (inputChoice) {
                 case 1:
                     list = getListFromConsole();
+                    runSort = true;
                     break;
                 case 2:
                     list = getListFromFile(list);
+                    runSort = true;
                     break;
                 case 3:
                     runSort = false;

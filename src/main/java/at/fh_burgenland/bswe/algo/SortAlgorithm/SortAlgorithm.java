@@ -54,7 +54,6 @@ public abstract class SortAlgorithm {
             int[] sortedList = sortAlgorithm.executeAlgorithm(list);
             logger.info("Original list: " + ListProcessor.getListAsString(list));
             logger.info("Sorted list: " + ListProcessor.getListAsString(sortedList));
-            logger.info("Number of iteration steps: "); //TODO: Anzahl der Sortierdurchläufe implementieren
         } catch (Exception e) {
             logger.error(e);
         }

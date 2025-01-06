@@ -19,6 +19,10 @@ public class CountingSortAlgorithm extends SortAlgorithm {
         iterations = 0;
         if (originalList == null || originalList.length == 0)
             return null;
+
+        if (originalList.length == 1)
+            return originalList;
+
         for (int i = 0; i < originalList.length - 1; i++) {
             if (originalList[i] < 0)
                 throw new IllegalArgumentException("The given original list contains a negative number. " +
