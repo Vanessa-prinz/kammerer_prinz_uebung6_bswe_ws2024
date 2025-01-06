@@ -11,6 +11,8 @@ public abstract class SortAlgorithm {
 
     private static final Logger logger = LogManager.getLogger(SortAlgorithm.class);
 
+    protected int iterations;
+
     /**
      * This abstract method executes the sort algorithm.
      * @param list the array of integers to sort
@@ -33,6 +35,7 @@ public abstract class SortAlgorithm {
         long endTime = System.nanoTime();
         logger.info("EndTime: " + endTime);
         logger.info("Execution time: " + (endTime - startTime) + " ns");
+        logger.info("Iterations: " + iterations);
         return result;
     }
 

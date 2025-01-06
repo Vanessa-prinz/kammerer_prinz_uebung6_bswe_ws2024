@@ -18,7 +18,7 @@ public class InsertionSortAlgorithm extends SortAlgorithm {
         }
 
         int[] sortedList = originalList.clone();
-        int iterationCount = 0;
+        iterations = 0;
 
         for (int i = 1; i < sortedList.length; i++) {
             int key = sortedList[i];
@@ -30,8 +30,9 @@ public class InsertionSortAlgorithm extends SortAlgorithm {
             }
 
             sortedList[j + 1] = key;
-            iterationCount++;
+            iterations++;
         }
+
 
         return sortedList;
     }

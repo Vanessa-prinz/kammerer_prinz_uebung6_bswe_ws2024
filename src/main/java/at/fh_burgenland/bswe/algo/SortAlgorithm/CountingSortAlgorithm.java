@@ -7,6 +7,7 @@ import java.util.Arrays;
  */
 public class CountingSortAlgorithm extends SortAlgorithm {
 
+
     /**
      * This method implements the logic of the counting sort algorithm.
      * It trys to sort a given list.
@@ -15,6 +16,7 @@ public class CountingSortAlgorithm extends SortAlgorithm {
      */
     @Override
     public int[] getSortedList(int[] originalList) {
+        iterations = 0;
         if (originalList == null || originalList.length == 0)
             return null;
         for (int i = 0; i < originalList.length - 1; i++) {
@@ -26,18 +28,21 @@ public class CountingSortAlgorithm extends SortAlgorithm {
         int[] helperArray = new int[Arrays.stream(originalList).max().getAsInt()+1];
         for (int i = 0; i < originalList.length; i++) {
             helperArray[originalList[i]]++;
+            iterations++;
         }
 
         int elementCounter = 0;
         for (int i = 0; i < helperArray.length; i++) {
             elementCounter += helperArray[i];
             helperArray[i] = elementCounter;
+            iterations++;
         }
 
         int[] sortedArray = new int[originalList.length];
         for (int i = originalList.length-1; i >= 0; i--) {
             sortedArray[helperArray[originalList[i]] - 1] = originalList[i];
             helperArray[originalList[i]]--;
+            iterations++;
         }
         return sortedArray;
     }
